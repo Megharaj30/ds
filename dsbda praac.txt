@@ -1,83 +1,27 @@
 ass1:
 
-# Step 1: Locate Zomato dataset on Kaggle
-# The Zomato dataset can be found at: https://www.kaggle.com/shrutimehta/zomato-restaurants-data
-
-# Step 2: Description of the data
-# The Zomato dataset contains information about restaurants including location, ratings, types of cuisines, cost, etc.
-
-# Step 3: Load the dataset into a pandas DataFrame
+import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Assuming you have downloaded the zomato.csv file and placed it in the working directory
-data = pd.read_csv(r'C:\Users\DELL\Downloads\archive (4)\zomato.csv', encoding='latin1')
+weather = pd.read_csv("weatherAUS.csv")
 
+weather.head(5)
 
-# Step 4: Data preprocessing
-# Check for missing values
-print(data.isnull().sum())
-print('')
+weather.info()
 
-# Get initial statistics
-print(data.describe())
+weather.describe(include='all')
 
-# Variable descriptions for the columns provided
-variable_descriptions = {
-    'Restaurant ID': 'Unique identifier for each restaurant',
-    'Restaurant Name': 'Name of the restaurant',
-    'Country Code': 'Country code where the restaurant is located',
-    'City': 'City where the restaurant is located',
-    'Address': 'Address of the restaurant',
-    'Locality': 'Locality of the restaurant',
-    'Locality Verbose': 'Detailed locality information',
-    'Longitude': 'Longitude coordinate of the restaurant',
-    'Latitude': 'Latitude coordinate of the restaurant',
-    'Cuisines': 'Types of cuisines served at the restaurant',
-    'Average Cost for two': 'Average cost for two people dining at the restaurant',
-    'Currency': 'Currency used for pricing',
-    'Has Table booking': 'Whether the restaurant allows table booking (Yes/No)',
-    'Has Online delivery': 'Whether the restaurant offers online delivery (Yes/No)',
-    'Is delivering now': 'Whether the restaurant is currently delivering orders (Yes/No)',
-    'Switch to order menu': 'Option to switch to order menu (Yes/No)',
-    'Price range': 'Price range of the restaurant',
-    'Aggregate rating': 'Overall rating of the restaurant',
-    'Rating color': 'Color representation of the rating',
-    'Rating text': 'Text representation of the rating',
-    'Votes': 'Number of votes received by the restaurant'
-}
+print(weather.select_dtypes(include=['number']).std())
+print('-------------------------------------')
+print(weather.select_dtypes(include=['number']).median())
 
-# Print variable descriptions
-for column, description in variable_descriptions.items():
-    print(f"{column}: {description}")
+weather.shape
 
+weather.isnull().sum()
 
-# Check dimensions of the DataFrame
-print(data.shape)
-
-# Step 5: Data formatting and normalization
-# Check variable names to see if the column 'rate' exists
-print(data.dtypes)
-
-print(data.columns)
-
-# If the column name is different, update it accordingly and then convert to numeric
-data['Aggregate rating'] = pd.to_numeric(data['Aggregate rating'], errors='coerce')
-
-
-# Step 6: Turn categorical variables into quantitative variables
-# One way to convert categorical variables into quantitative variables is by using one-hot encoding
-# However, this might not be necessary for all categorical variables in this dataset
-data['Has Online delivery'] = data['Has Online delivery'].map({'Yes': 1, 'No': 0})
-data['Has Table booking'] = data['Has Table booking'].map({'Yes': 1, 'No': 0})
-
-# Now, 'Has Online delivery' and 'Has Table booking' are represented as quantitative variables (0 or 1)
-
-# You can explore other categorical variables and decide if they need conversion to quantitative variables
-
-# Let's print the updated DataFrame
-print(data.head())
-
-
+print(weather.dtypes)
 
 ------------------------------------------------------------------------------------------------------------------------------------------
 
