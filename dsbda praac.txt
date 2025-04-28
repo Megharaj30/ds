@@ -1,0 +1,556 @@
+ass1:
+
+# Step 1: Locate Zomato dataset on Kaggle
+# The Zomato dataset can be found at: https://www.kaggle.com/shrutimehta/zomato-restaurants-data
+
+# Step 2: Description of the data
+# The Zomato dataset contains information about restaurants including location, ratings, types of cuisines, cost, etc.
+
+# Step 3: Load the dataset into a pandas DataFrame
+import pandas as pd
+
+# Assuming you have downloaded the zomato.csv file and placed it in the working directory
+data = pd.read_csv(r'C:\Users\DELL\Downloads\archive (4)\zomato.csv', encoding='latin1')
+
+
+# Step 4: Data preprocessing
+# Check for missing values
+print(data.isnull().sum())
+print('')
+
+# Get initial statistics
+print(data.describe())
+
+# Variable descriptions for the columns provided
+variable_descriptions = {
+    'Restaurant ID': 'Unique identifier for each restaurant',
+    'Restaurant Name': 'Name of the restaurant',
+    'Country Code': 'Country code where the restaurant is located',
+    'City': 'City where the restaurant is located',
+    'Address': 'Address of the restaurant',
+    'Locality': 'Locality of the restaurant',
+    'Locality Verbose': 'Detailed locality information',
+    'Longitude': 'Longitude coordinate of the restaurant',
+    'Latitude': 'Latitude coordinate of the restaurant',
+    'Cuisines': 'Types of cuisines served at the restaurant',
+    'Average Cost for two': 'Average cost for two people dining at the restaurant',
+    'Currency': 'Currency used for pricing',
+    'Has Table booking': 'Whether the restaurant allows table booking (Yes/No)',
+    'Has Online delivery': 'Whether the restaurant offers online delivery (Yes/No)',
+    'Is delivering now': 'Whether the restaurant is currently delivering orders (Yes/No)',
+    'Switch to order menu': 'Option to switch to order menu (Yes/No)',
+    'Price range': 'Price range of the restaurant',
+    'Aggregate rating': 'Overall rating of the restaurant',
+    'Rating color': 'Color representation of the rating',
+    'Rating text': 'Text representation of the rating',
+    'Votes': 'Number of votes received by the restaurant'
+}
+
+# Print variable descriptions
+for column, description in variable_descriptions.items():
+    print(f"{column}: {description}")
+
+
+# Check dimensions of the DataFrame
+print(data.shape)
+
+# Step 5: Data formatting and normalization
+# Check variable names to see if the column 'rate' exists
+print(data.dtypes)
+
+print(data.columns)
+
+# If the column name is different, update it accordingly and then convert to numeric
+data['Aggregate rating'] = pd.to_numeric(data['Aggregate rating'], errors='coerce')
+
+
+# Step 6: Turn categorical variables into quantitative variables
+# One way to convert categorical variables into quantitative variables is by using one-hot encoding
+# However, this might not be necessary for all categorical variables in this dataset
+data['Has Online delivery'] = data['Has Online delivery'].map({'Yes': 1, 'No': 0})
+data['Has Table booking'] = data['Has Table booking'].map({'Yes': 1, 'No': 0})
+
+# Now, 'Has Online delivery' and 'Has Table booking' are represented as quantitative variables (0 or 1)
+
+# You can explore other categorical variables and decide if they need conversion to quantitative variables
+
+# Let's print the updated DataFrame
+print(data.head())
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+ass2:
+
+import pandas as pd
+import numpy as np
+
+# Step 1: Create a sample dataset with missing values and inconsistencies
+data = {
+    'Student_ID': list(range(1, 51)),  # Creating Student IDs from 1 to 50
+    'Name': ['John', 'Alice', 'Bob', 'Emily', 'Mike', 'Sophia', 'Liam', 'Olivia', 'Noah', 'Emma'] * 5,  # Repeating names to achieve 50 rows
+    'Age': [20, 22, np.nan, 19, 25, 21, 23, 18, np.nan, 24] * 5,  # Repeating ages to achieve 50 rows
+    'Gender': ['M', 'F', 'M', 'F', 'M', 'F', 'M', 'F', 'M', 'F'] * 5,  # Repeating genders to achieve 50 rows
+    'Math_Score': [85, 90, 75, np.nan, 88, 92, 78, 85, 90, 85] * 5,  # Repeating math scores to achieve 50 rows
+    'English_Score': [78, np.nan, 82, 80, 75, 85, 90, 88, 82, 86] * 5,  # Repeating English scores to achieve 50 rows
+    'Physics_Score': [92, 85, 88, 94, np.nan, 85, 90, 84, 88, 92] * 5  # Repeating Physics scores to achieve 50 rows
+}
+
+df = pd.DataFrame(data)
+
+# Check for missing values
+print("Missing Values:")
+print(df.isnull().sum())
+
+# Step 2: Scan numeric variables for outliers
+numeric_variables = ['Age', 'Math_Score', 'English_Score', 'Physics_Score']
+outliers = {}
+for var in numeric_variables:
+    q1 = df[var].quantile(0.25)
+    q3 = df[var].quantile(0.75)
+    iqr = q3 - q1
+    lower_bound = q1 - 1.5 * iqr
+    upper_bound = q3 + 1.5 * iqr
+    outliers[var] = df[(df[var] < lower_bound) | (df[var] > upper_bound)][var].tolist()
+
+print("\nOutliers:")
+print(outliers)
+
+# Step 3: Apply data transformations
+# For example, let's apply a log transformation to the 'Math_Score' variable
+df['Math_Score_Log'] = np.log(df['Math_Score'])
+
+# Check skewness before and after transformation
+print("\nSkewness Before Transformation:")
+print(df['Math_Score'].skew())
+print("\nSkewness After Transformation:")
+print(df['Math_Score_Log'].skew())
+
+# Display the updated DataFrame
+print("\nUpdated DataFrame:")
+print(df)
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+ass3:
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+%matplotlib inline
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+
+
+iris = sns.load_dataset('iris')
+
+iris.head()
+
+
+iris.describe()
+
+
+iris.describe(include='object')
+
+
+iris_groupby = iris.groupby(by='species')
+
+
+iris_groupby.std()
+
+
+iris_groupby.mean()
+
+iris_groupby.median()
+
+iris_groupby.min()
+
+iris_groupby.max()
+
+
+iris_groupby.quantile()
+-----------------------------------------------------------------------------------------------------------------------------------
+
+
+ass 4:
+
+
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+from sklearn.impute import SimpleImputer
+
+# Load the dataset
+data = pd.read_csv(r'C:\Users\DELL\Downloads\archive (7)\BostonHousing.csv')
+
+# Handle missing values
+imputer = SimpleImputer(strategy='mean')
+data_imputed = pd.DataFrame(imputer.fit_transform(data), columns=data.columns)
+
+# Separate features (X) and target variable (y)
+X = data_imputed.drop('medv', axis=1)
+y = data_imputed['medv']
+
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a Linear Regression model
+model = LinearRegression()
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+mse = mean_squared_error(y_test, y_pred)
+print("Mean Squared Error:", mse)
+
+# Coefficients
+coefficients = pd.DataFrame({'feature': X.columns, 'coefficient': model.coef_})
+print("\nCoefficients:\n", coefficients)
+
+# Intercept
+print("\nIntercept:", model.intercept_)
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+ass5:
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score
+
+# Load the dataset
+data = pd.read_csv(r'C:\Users\DELL\Downloads\archive (8)\Social_Network_Ads.csv')
+
+# Separate features and target variable
+X = data.iloc[:, :-1].values
+y = data.iloc[:, -1].values
+
+# Splitting the dataset into the Training set and Test set
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+
+# Feature scaling
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# Fitting Logistic Regression to the Training set
+classifier = LogisticRegression(random_state=0)
+classifier.fit(X_train, y_train)
+
+# Predicting the Test set results
+y_pred = classifier.predict(X_test)
+
+
+# Computing confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:")
+print(cm)
+
+# Extracting TP, FP, TN, FN
+TP = cm[1, 1]
+FP = cm[0, 1]
+TN = cm[0, 0]
+FN = cm[1, 0]
+
+# Computing Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+
+# Computing Error rate
+error_rate = 1 - accuracy
+print("Error Rate:", error_rate)
+
+# Computing Precision
+precision = precision_score(y_test, y_pred)
+print("Precision:", precision)
+
+# Computing Recall
+recall = recall_score(y_test, y_pred)
+print("Recall:", recall)
+
+
+
+output:
+
+
+Confusion Matrix:
+[[65  3]
+ [ 8 24]]
+Accuracy: 0.89
+Error Rate: 0.10999999999999999
+Precision: 0.8888888888888888
+Recall: 0.75
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+
+ass6:
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score
+
+# Load the dataset
+data = pd.read_csv(r'C:\Users\DELL\Downloads\archive (5)\iris.csv')
+
+# Separate features and target variable
+X = data.iloc[:, :-1].values
+y = data.iloc[:, -1].values
+
+# Splitting the dataset into the Training set and Test set
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+
+# Fitting Naive Bayes classifier to the Training set
+classifier = GaussianNB()
+classifier.fit(X_train, y_train)
+
+# Predicting the Test set results
+y_pred = classifier.predict(X_test)
+
+# Computing confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:")
+print(cm)
+
+# Extracting TP, FP, TN, FN
+TP = cm[1, 1]
+FP = cm[0, 1]
+TN = cm[0, 0]
+FN = cm[1, 0]
+
+# Computing Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+
+# Computing Error rate
+error_rate = 1 - accuracy
+print("Error Rate:", error_rate)
+
+# Computing Precision
+precision = precision_score(y_test, y_pred, average='macro')
+print("Precision:", precision)
+
+# Computing Recall
+recall = recall_score(y_test, y_pred, average='macro')
+print("Recall:", recall)
+
+
+output:
+
+Confusion Matrix:
+[[13  0  0]
+ [ 0 16  0]
+ [ 0  0  9]]
+Accuracy: 1.0
+Error Rate: 0.0
+Precision: 1.0
+Recall: 1.0
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------
+ass7:    
+#Tokenization: Split the text into words or tokens.
+#POS Tagging: Tag each token with its part of speech.
+#Stop words removal: Remove common stop words.
+#Stemming: Reduce words to their root form using stemming.
+#Lemmatization: Reduce words to their base or dictionary form using lemmatization.
+    
+# Install libraries if needed
+# !pip install nltk scikit-learn
+
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+nltk.download('stopwords')
+nltk.download('wordnet')
+
+# Sample document
+doc = "Natural Language Processing is a fascinating field of Artificial Intelligence that focuses on the interaction between computers and humans through language."
+
+# Preprocessing
+tokens = doc.split()  # just simple split
+tokens = [w for w in tokens if w.isalpha()]  # Keep only alphabet words
+tokens = [w.lower() for w in tokens if w.lower() not in stopwords.words('english')]
+
+stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
+
+stems = [stemmer.stem(w) for w in tokens]
+lemmas = [lemmatizer.lemmatize(w) for w in tokens]
+
+print("Tokens:", tokens)
+print("Stems:", stems)
+print("Lemmas:", lemmas)
+
+# TF-IDF
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform([doc])
+
+# Print TF-IDF
+for word, score in zip(vectorizer.get_feature_names_out(), X.toarray()[0]):
+    if score > 0:
+        print(word, ":", round(score, 4))
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+ass8:
+
+
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+from seaborn import load_dataset
+
+# Load Titanic dataset from Seaborn
+titanic_df = sns.load_dataset("titanic")
+
+# Display the first few rows of the dataset to understand its structure
+print(titanic_df.head())
+
+# Use Seaborn to visualize patterns in the data
+# For example, let's create a count plot of survival based on passenger class
+sns.countplot(x='survived', hue='class', data=titanic_df)
+plt.title('Survival Count by Passenger Class')
+plt.show()
+
+# Now, let's plot a histogram to visualize the distribution of ticket prices
+sns.histplot(titanic_df['fare'], kde=True)
+plt.title('Distribution of Ticket Prices')
+plt.xlabel('Fare')
+plt.ylabel('Frequency')
+plt.show()
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+ass9:
+
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load Titanic dataset from Seaborn
+titanic_df = sns.load_dataset("titanic")
+
+# Plotting box plot for distribution of age with respect to gender and survival status
+sns.boxplot(x='sex', y='age', hue='survived', data=titanic_df)
+plt.title('Distribution of Age by Gender and Survival Status')
+plt.xlabel('Gender')
+plt.ylabel('Age')
+plt.show()
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+ass10:
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Download the Iris dataset from UCI Machine Learning Repository
+iris_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
+
+# Define column names for the dataset
+column_names = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'class']
+
+# Load the dataset into a DataFrame
+iris_df = pd.read_csv(iris_url, names=column_names)
+
+# 1. List down the features and their types
+print("Features and their types:")
+print(iris_df.dtypes)
+
+# 2. Create a histogram for each feature
+iris_df.hist(figsize=(10, 8))
+plt.suptitle("Histograms of Iris Dataset Features")
+plt.show()
+
+# 3. Create a box plot for each feature
+plt.figure(figsize=(10, 8))
+sns.boxplot(data=iris_df)
+plt.title("Boxplot of Iris Dataset Features")
+plt.show()
+
+# 4. Compare distributions and identify outliers
+# We can visually inspect the histograms and box plots to compare distributions and identify outliers.
+
+# Plot histograms and box plots side by side for comparison
+fig, axs = plt.subplots(2, 4, figsize=(20, 10))
+
+# Histograms
+for i, col in enumerate(iris_df.columns[:-1]):
+    sns.histplot(data=iris_df, x=col, ax=axs[0, i], kde=True)
+    axs[0, i].set_title(f"Histogram of {col}")
+
+# Box plots
+for i, col in enumerate(iris_df.columns[:-1]):
+    sns.boxplot(data=iris_df, y=col, ax=axs[1, i])
+    axs[1, i].set_title(f"Boxplot of {col}")
+
+plt.tight_layout()
+plt.show()
+
+
+
+
+output:
+
+Features and their types:
+sepal_length    float64
+sepal_width     float64
+petal_length    float64
+petal_width     float64
+class            object
+dtype: object
+
+-------------------------------------------------------------------------------------------------------------
+
+SCALA
+
+
+1.scala 
+Command Should Appear 
+Welcome to scala 2.11.12 some more stuff is there 
+Then on terminal 
+2. scala > 
+Will appear 
+ Press Ctrl +z  or Ctrl +c 
+3.nano file name .scala 
+Then file will be opened then write the python code
+4.Then ctrl+s for  saving and ctrl +x for exit 
+Run scala file using command 
+ 5.scala file name .scala
+
+
