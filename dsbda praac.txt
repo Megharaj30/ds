@@ -1,37 +1,38 @@
-ass1:
+#A-1
 
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
 import seaborn as sns
 
-weather = pd.read_csv("weatherAUS.csv")
+iris=pd.read_csv("Iris.csv")
+iris.head(10)
 
-weather.head(5)
 
-weather.info()
+iris.isnull().sum()
 
-weather.describe(include='all')
+iris.describe()
 
-print(weather.select_dtypes(include=['number']).std())
-print('-------------------------------------')
-print(weather.select_dtypes(include=['number']).median())
+iris.shape
 
-weather.shape
+iris.dtypes
 
-weather.isnull().sum()
 
-print(weather.dtypes)
+iris['Species']=iris['Species'].astype('category')
+
+iris.dtypes
+
+
+iris['Species_code']=iris['Species'].cat.codes
+
+iris[['Species','Species_code']].head()
 
 ------------------------------------------------------------------------------------------------------------------------------------------
-
-
-ass2:
+ass 2 
 
 import pandas as pd
 import numpy as np
 
-# Step 1: Create a sample dataset with missing values and inconsistencies
 data = {
     'Student_ID': list(range(1, 51)),  # Creating Student IDs from 1 to 50
     'Name': ['John', 'Alice', 'Bob', 'Emily', 'Mike', 'Sophia', 'Liam', 'Olivia', 'Noah', 'Emma'] * 5,  # Repeating names to achieve 50 rows
@@ -44,12 +45,17 @@ data = {
 
 df = pd.DataFrame(data)
 
-# Check for missing values
-print("Missing Values:")
+print("Missing Values :")
 print(df.isnull().sum())
 
-# Step 2: Scan numeric variables for outliers
-numeric_variables = ['Age', 'Math_Score', 'English_Score', 'Physics_Score']
+df['Age'].fillna(df['Age'].mean(), inplace=True)
+df['Math_Score'].fillna(df['Math_Score'].mean(), inplace=True)
+df['English_Score'].fillna(df['English_Score'].mean(), inplace=True)
+df['Physics_Score'].fillna(df['Physics_Score'].mean(), inplace=True)
+
+df.isnull().sum()
+
+numeric_variables = ['Age','Math_Score','English_Score','Physics_Score']
 outliers = {}
 for var in numeric_variables:
     q1 = df[var].quantile(0.25)
@@ -59,23 +65,17 @@ for var in numeric_variables:
     upper_bound = q3 + 1.5 * iqr
     outliers[var] = df[(df[var] < lower_bound) | (df[var] > upper_bound)][var].tolist()
 
-print("\nOutliers:")
+print("\nOutliers :")
 print(outliers)
 
-# Step 3: Apply data transformations
-# For example, let's apply a log transformation to the 'Math_Score' variable
 df['Math_Score_Log'] = np.log(df['Math_Score'])
-
-# Check skewness before and after transformation
 print("\nSkewness Before Transformation:")
 print(df['Math_Score'].skew())
 print("\nSkewness After Transformation:")
 print(df['Math_Score_Log'].skew())
 
-# Display the updated DataFrame
 print("\nUpdated DataFrame:")
 print(df)
-
 
 
 ----------------------------------------------------------------------------------------------------------------------------
